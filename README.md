@@ -67,53 +67,131 @@ The seven technical indicators of the CNN Fear & Greed Index were reconstructed 
 ## III. Foreign Fear Index
 
 ### 3.1 Variable Description
-- Based on foreign net purchases of KOSPI stocks adjusted by USD/KRW exchange rate.
-- Reflects foreign investors' confidence and fund flows.
+What we aimed to measure through the Foreign Index is the attractiveness foreigners feel about investing in the Korean market. To put this into account, we first set up the variable as follows:
+- Net Foreign Purchase * USD/KRW Exchange Rate
+
+Since a higher USD/KRW exchange rate tends to reduce the profitability of foreign investors, we adjusted for this exchange rate risk by incorporating the adjusted figure into the calculation. Moreover, all data used in the Foreign Fear Index were processed in the same manner as the Korean Fear Index.
 
 ### 3.2 Granger Causality
-- Test if foreign fear index influences Korean fear index significantly.
+The Granger Causality test is a regression-based methodology used to analyze whether two time series exhibit a causal relationship. More specifically, it compares the results of a regression analysis predicting the future of a time series (Y) based only on its past data, with those of a regression analysis using both the past data of Y and another time series (X). If the results show a statistically significant difference, it indicates that the past data of X have a meaningful impact on predicting Y.
+
+<img width="409" alt="image" src="https://github.com/user-attachments/assets/f5351e4b-1c6f-4997-9194-a4504b8a2194">
+
+However, as shown in the results, the p-value is notably high, suggesting limited significance and a need to strengthen the Foreign Fear Index.
 
 ### 3.3 Variable Description
-- Refined with macroeconomic variables:
+The Foreign Fear Index was refined with extra variables. The final selected variables were as follows:
+
   1. 3-Year Interest Rate Spread: US-Korea bond yield differences.
   2. Dollar Index (DXY): Global economic conditions and currency fluctuations.
+
+While there were many other candidate variables considered, these two variables were chosen based on their relevance to how much foreign investors trust the Korean market and find it attractive for investment. Variables that were logically inconsistent with this framework were excluded, leaving only those that passed our final selection process.
+Although we initially considered including macroeconomic indicators like GDP growth rates, we excluded them due to concerns about distortion from using monthly data. Similarly, while we aimed to utilize valuation metrics given the high proportion of foreign investment in Korea’s large-cap stocks, these variables were excluded due to inconsistencies across industrial sectors during the company selection process.
 
 ### 3.4 Index Strengthening Variable
 **3.4.1 3-Year Interest Rate Spread:**
 - Captures cost differences for investors between US and Korea.
+We extracted and compared bond yields from the U.S. and Korea, aiming to incorporate the logic of carry trade directly into the analysis. The carry trade strategy involves borrowing funds in low-interest-rate regions and investing in high-interest-rate regions. Using the interest rate differential between the U.S. and Korea, we identified factors that drive the inflow of investment funds.
 
 **3.4.2 Dollar Index:**
 - Measures relative strength of USD against other major currencies.
+The Dollar Index was included to reflect global economic conditions. This index accounts for the cost of currency exchange for foreign investors. The stronger the dollar, the less attractive the Korean market becomes for investment, and this assumption was incorporated into our variable selection.
 
-### 3.5 Granger Causality Comparison and Stationary Testing
-- Granger causality tested before and after index strengthening.
-- Stationarity validated with Augmented Dickey-Fuller (ADF) and KPSS tests.
+### 3.5 Final Variable Selection Result
+- Korean Fear Index : Market Momentum, Stock Intensity, Stock Price Breadth, Put/Call Option Ratio, Market Volatility, Safe Haven Demand, Junk Bond Demand
+- Foreign Fear Index : Net Foreign Purchase * USD/KRW Exchange Rate, 3-Year Interest Rate Spread, Dollar Index (DXY)
+Regression analysis results shown below proved minimal correlation among most variables, confirming that they could be used without significant issues.
+
+<img width="301" alt="image" src="https://github.com/user-attachments/assets/b0a3219a-63bc-4d01-89a6-5e6d2375fd25">
+
+
+### 3.6 Granger Causality Comparison and Stationary Testing
+The Granger causality test results after strengthening the index show that the detailed p-values are displayed as 0 due to rounding, but the actual values are extremely low. This confirms that the foreign fear index significantly impacts the Korean market fear index. However, since the Granger causality test assumes stationarity of the time series data, we conducted unit root tests using the ADF and KPSS methods. Both tests confirmed that the data were stationary within the acceptable significance levels.
+
+<img width="256" alt="image" src="https://github.com/user-attachments/assets/84ba1250-4e58-4c52-a205-0e6af1f97d19">
+
+ADF Test (KOR, FOR)
+
+<img width="251" alt="image" src="https://github.com/user-attachments/assets/a59b8df9-a935-4a31-b99c-247d21c5c864">
+
+<img width="242" alt="image" src="https://github.com/user-attachments/assets/72ecc79e-d822-4543-864b-c1125bccd1de">
+
+KPSS Test (KOR, FOR)
+
+<img width="220" alt="image" src="https://github.com/user-attachments/assets/23832f1c-1cb3-4311-b265-44eecdef9de2">
+
+<img width="220" alt="image" src="https://github.com/user-attachments/assets/0d1fedfd-1d2c-479b-9728-64c012d2da24">
+
+### 3.7 Visualization of Korean & Foreign Fear Index
+
+<img width="488" alt="image" src="https://github.com/user-attachments/assets/59411c5e-089a-4994-8692-18bdeb8e29da">
+
+We visualized the data to observe its impact and identified a tendency for the foreign fear index to precede the Korean market fear index to some extent. Based on this observation, we aim to validate how the time lag between foreign fear and Korean market fear could be utilized in the market, akin to volatility trading, to develop effective investment strategies.
 
 ## IV. Backtesting
 
 ### 4.1 Literature Review and Comparison
-- Previous models used single fear indices (e.g., VIX).
-- This study incorporates both Korean and foreign indices for better market representation.
+When examining prior research on market timing strategies using fear indices, it was common to set specific thresholds and rebalance the portfolio whenever the score reaches these levels. For instance, Hanwha Investment & Securities reported a market timing strategy achieving an excess return of 0.23%.
+Our approach incorporated a more multidimensional and reliable investment strategy by reflecting the flow of foreign funds through a more realistic index.
 
 ### 4.2 Backtesting Procedure and Results
-- Methodology:
+Methodology:
   - Data Period: 2013-08-06 to 2024-11-08.
-  - Initial capital: 100M KRW split into stocks (60%) and cash (40%).
-  - Strategy:
-    - Buy when both indices signal extreme fear.
-    - Sell during extreme greed.
-  - Performance Metrics: Lower volatility, higher returns compared to KOSPI-only benchmarks.
+  - Initial capital: 100M KRW split into stocks (60%) and cash (40%) with periodic rebalancing of 2:8 or 8:2.
+  - Assumptions: Transaction costs were excluded.
+
+We calculated the spread between the foreign fear index and the Korean fear index to assess the relative sentiment in the market. The spread is defined as:
+**Spread = (Foreign Fear Index) - (Korean Fear Index)**
+
+Based on the spread, we identified four market scenarios to guide portfolio rebalancing strategies:
+
+**1. Spread > 0 and Korean Fear Index < 50:**  
+   Foreign investors exhibit greed while the Korean market reflects fear, indicating a **buy** opportunity due to potential market undervaluation.
+
+**2. Spread < 0 and Korean Fear Index ≥ 50:**  
+   Foreign investors show fear while the Korean market reflects greed, suggesting a **sell** strategy due to possible market overvaluation.
+
+**3. Foreign Fear Index ≥ 80 and Korean Fear Index ≥ 80:**  
+   Both foreign and Korean markets are in extreme fear, representing a **sell** scenario to avoid significant downside risk.
+
+**4. Foreign Fear Index ≤ 20 and Korean Fear Index ≤ 20:**  
+   Both foreign and Korean markets exhibit extreme greed, creating a **buy** opportunity to leverage positive sentiment and market optimism.
+
+Portfolio rebalancing decisions were executed based on these scenarios, reflecting adjustments to asset allocations according to the spread and the prevailing market conditions.
+
+<img width="726" alt="image" src="https://github.com/user-attachments/assets/eb20f3f0-0ecc-4740-b346-8afecba51a12">
+
+**Backtesting Results**
+
+The results of our backtesting can be summarized in three key findings:
+1. Lower Volatility: Our strategy exhibited lower volatility compared to benchmark indices.
+2. Improved Resilience in Bear Markets: The strategy demonstrated stronger defensive performance during market downturns.
+3. Higher Final Returns: The final returns of our strategy exceeded those of the benchmark.
 
 ## V. Conclusion
 
 ### 5.1 Insights
-- Foreign fear index leads the Korean index, validating its predictive power.
-- Market timing strategy based on fear indices demonstrates:
-  1. Reduced risk.
-  2. Enhanced returns.
 
+**Leading Indicators of Foreign Investor Sentiment**
+
+- The strategy demonstrates that following a **fear-spread-based portfolio** can reduce risks compared to a simple **long-only strategy**, while also having the potential to amplify returns.  
+- This suggests that the foreign fear index can serve as a leading indicator for market trends in Korea.
+
+**Fund Design Feasibility**
+
+- Rule-based funds or **robot-advised models** can be developed based on the foreign fear index for real-world application.
+- Example: “Smart Beta Funds based on Fear/Greed Indices.”
+  
 ### 5.2 Limitations
-- Excludes trading costs, slippage, and tax impacts.
-- Heavily reliant on US-centric factors (e.g., dollar index, US-Korea bond spread).
-- Neglects diverse foreign investor profiles (e.g., Europe, China).
 
+**Lack of Diversity in Foreign Investor Composition**
+- Foreign investors in Korea are not limited to the U.S.; they also include countries like the UK, Singapore, and China.  
+- However, the current strategy predominantly reflects U.S.-centric factors, such as the Dollar Index and U.S.-Korea interest rate spreads, without fully accounting for diverse investor origins.
+
+![image](https://github.com/user-attachments/assets/336796e1-5d12-449a-8d0a-b2b44573410a)
+
+
+**Ignoring Transaction Costs**
+- The current strategy does not account for transaction costs, such as fees, spreads, and taxes, incurred during rebalancing.  
+- Implications: Accumulated transaction costs from frequent rebalancing may significantly reduce total returns, undermining the theoretical performance.  
+- Additionally, the current strategy adjusts buy/sell ratios based on signals to ratios like 8:2 or 2:8, leading to relatively high trading frequency.
