@@ -7,12 +7,14 @@ This study was inspired by research conducted based on _'EMP 전략'_ by Hanhwa 
 
 ### 1.1 Background
 **1.1.1 Limitaitons of VKOSPI**
+
 The VKOSPI, introduced by KRX in 2009, serves currently as Korea's fear index measuring the implied volatility of KOSPI200 options.
 Limitations of VKOSPI:
   - Does not fully reflect the market fear and shows unstable correlations with the market.
   - Low liquidity in KOSPI200 options and weak correlation with global indices like VIX (US) and VSTOXX (Europe).
 
 **1.1.2 Foreign Investment in the Korean Financial Market**
+
 High foreign investor proportion in KOSPI (33%) and KOSDAQ (10%) markets
 The recent underperformance of KOSPI, centered around Samsung Electronics' stock price, has highlighted the selling trends of foreign investors and the medium-to-long-term risks associated with Samsung Electronics.
   
